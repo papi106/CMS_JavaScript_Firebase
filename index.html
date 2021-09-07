@@ -1,0 +1,191 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Content Management System - Homework</title>
+
+    <!--Moment js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    
+    <link rel="stylesheet" href="css/index.css">
+    <script src="js/index.js"></script>
+
+    <!-- to eliminate fav.icon requests -->
+    <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+    <!--Bootstrap CSS + JS-->
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+    
+    <!--Google Fonts - Lato + Icons-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+
+<body>
+    <!--Header-->
+    <header>
+        <div class="nav">
+            <div class="navlogo"><a class="logo" href="#">Content Management System</a></div>
+
+            <div class="navitems">
+                <nav>
+                    <ul class="nav-ul">
+                        <li><a href="#">Acasa</a></li>
+                        <li><a href="#">Smecherie</a></li>
+                        <li><a href="#">Test</a></li>
+                        <li><a href="#">Autentificare</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!--Content-->
+    <main>
+        <div class="container">
+            <h1 class="text-center" style="font-weight:bold">Tabelul cu angajati</h1>
+        </div>
+
+        <!--Sort + Search bar-->
+        <div class="search-sort">
+
+            <!--Search bar-->
+            <div class="search-bar">
+                <div class="input-group">
+                    <div class="form-outline">
+                        <input type="search" id="search-employee" onkeyup="searchEmployee()" class="form-control" placeholder="Cauta angajat ..."/>
+                    </div>
+                </div>
+            </div>
+            
+            <!--Sort-->
+            <div class="sorter">
+                <select class="form-group" id="sortBy">
+                    <option value="" selected>Sorteaza ...</option>
+                    <option value="1">Alfabetic - A-Z</option>
+                    <option value="2">Alfabetic - Z-A</option>
+                    <option value="3">Varsta - crescator</option>
+                    <option value="4">Varsta - descrescator</option>
+                </select>
+                <button type="button" class="btn" style="background-color: #27496D; color:white;" id="sortButton">Sorteaza</button>
+            </div>
+        </div>
+
+        <!--Filter buttons-->
+        <div class="filter">
+            <select class="form-group">
+                <option value="" selected>Sex</option>
+                <option value="1">Masculin</option>
+                <option value="2">Feimnin</option>
+                <option value="3">Altul</option>
+            </select>
+
+            <select class="form-group">
+                <option value="" selected>Poza</option>
+                <option value="1">Are poza</option>
+                <option value="2">Nu are poza</option>
+            </select>
+
+            <select class="form-group">
+                <option value="" selected>Data nasterii</option>
+                <option value="1">Perioada</option>
+            </select>
+        </div>
+
+        <!--Table-->
+        <div>
+            <div class="table-responsive">
+                <table class="table table-bordered border-dark">
+                    <thead style="background-color: #27496D;">
+                        <th style="width:25%">Poza</th>
+                        <th style="width:15%">Nume</th>
+                        <th style="width:15%">Prenume</th>
+                        <th style="width:25%">Email</th>
+                        <th style="width:15%">Sex</th>
+                        <th style="width:20%">Data nasterii</th>
+                        <th style="width:15%">Sterge</th>
+                    </thead>
+                    <tbody id="table-employees">
+                    </tbody>
+                  </table>            
+            </div>
+        </div>
+
+        <!--Input form for adding employee-->
+
+        <!-- Button trigger modal -->
+        <button type="button" class="btn" style="background-color: #27496D; color:white;" id="modalButton" data-bs-toggle="modal" data-bs-target="#myModal">
+            Adauga angajat
+        </button>
+        
+        <!-- Modal -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Adauga un angajat</h5>
+                        <button type="button" class="btn-close close-myModal" data-bs-dismiss="modal"></button>
+                    </div>
+
+                    <div class="modal-body">
+
+                        <form>
+                            <div class="mb-3">
+                                <label for="last-name" class="form-label">Nume</label>
+                                <input type="text" class="form-control" id="last-name" placeholder="Introdu numele" required>
+                            </div>
+                    
+                            <div class="mb-3">
+                                <label for="first-name" class="form-label">Prenume</label>
+                                <input type="text" class="form-control" id="first-name" placeholder="Introdu prenumele" required>
+                            </div>
+                    
+                            <div class="mb-3">
+                                <label for="email-input" class="form-label">Adresa e-mail</label>
+                                <input type="email" class="form-control" id="email-input" placeholder="name@example.com" required>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="gender-input" class="form-label">Sex</label>
+                                <select class="form-select" id="gender-input" required>
+                                    <option value="" selected disabled>Selectati sexul</option>
+                                    <option value="Masculin">Masculin</option>
+                                    <option value="Feminin">Feminin</option>
+                                    <option value="Altul">Altul</option>
+                                </select>
+                            </div>
+                
+                            <div class="mb-3">
+                                <label for="birthdate-input" class="form-label">Data nasterii</label>
+                                <input type="date" class="form-control" id="birthdate-input" placeholder="" required>
+                            </div>
+                    
+                            <div class="mb-3">
+                                <label for="picture" class="form-label">Adauga poza</label>
+                                <input class="form-control" type="file" id="picture" onchange="showMyImage(this)" accept="image/*">
+                                <br>
+                                <img id="imgPreview" src="/images/picture.png" height=150>
+                            </div>
+
+                        </form>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary close-myModal" data-bs-dismiss="modal">Renunta</button>
+                        <button type="submit" class="btn" style="background-color:#27496D; color:white;" id="add-employee-button">
+                            Adauga angajat
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!--Footer-->
+
+</body>
+</html>
