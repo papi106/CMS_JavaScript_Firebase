@@ -4,6 +4,8 @@
 
 ### The homework is to integrate Firebase over the Employee CMS we've made.
 
+## Requirements:
+
 Adding an employee should insert an employee into a Firebase DB.
 
 Populating the employee table should show all the Employees in the Firebase DB.
