@@ -1,0 +1,23 @@
+{
+  "name": "cms-javascript-firebase",
+  "version": "1.0.0",
+  "description": "add package json",
+  "main": "index.js",
+  "dependencies": {
+    "firebase": "^9.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/papi106/CMS_JavaScript_Firebase.git"
+  },
+  "author": "Patrick Pacurar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/papi106/CMS_JavaScript_Firebase/issues"
+  },
+  "homepage": "https://github.com/papi106/CMS_JavaScript_Firebase#readme"
+}
