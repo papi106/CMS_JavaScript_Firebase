@@ -23,7 +23,6 @@ window.onload = () =>{
     }
 
     setDelete();
-
     setSort();
 }
 
@@ -197,7 +196,7 @@ function sortNameAscending(a, b) {
       if ((a.lastName + a.firstName) > (b.lastName + b.firstName)){
         return 1;
       }
-      return 0;
+    return 0;
 }
 
 //Sort by name descendent function
@@ -208,7 +207,7 @@ function sortNameDescending(a, b) {
       if ((a.lastName + a.firstName) > (b.lastName + b.firstName)){
         return -1;
       }
-      return 0;
+    return 0;
 }
 
 //Sort by age ascendent function
@@ -222,7 +221,7 @@ function sortAgeAscending(a, b) {
       if (ageA > ageB){
         return 1;
       }
-      return 0;
+    return 0;
 }
 
 //Sort by age descendent function
@@ -236,7 +235,7 @@ function sortAgeDescending(a, b) {
       if (ageA > ageB){
         return -1;
       }
-      return 0;
+    return 0;
 }
 
 //This function uses a switch to call the functions and show the sort result
@@ -268,42 +267,32 @@ function sortTable() {
 
 //Search employee by string (search bar)
 function searchEmployee() {
-    var input, filter, table, tr, td, i, txtValue;
-    input = document.getElementById("search-employee");
-    filter = input.value.toUpperCase();
-    table = document.getElementById("table-employees");
-    tr = table.getElementsByTagName("tr");
+    var input, filter, table, tr, td, i;
+      input = document.getElementById("search-employee");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("table-employees");
+      tr = table.getElementsByTagName("tr");
 
-    for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName("td")[1];
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[1]; // for column one
+        td1 = tr[i].getElementsByTagName("td")[2]; // for column two
+
         if (td) {
-          txtValue = td.textContent || td.innerText;
-          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          if ( (td.innerHTML.toUpperCase().indexOf(filter) > -1) || (td1.innerHTML.toUpperCase().indexOf(filter) > -1) )  {            
             tr[i].style.display = "";
           } else {
             tr[i].style.display = "none";
           }
         }
     }
-
-    for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName("td")[2];
-        if (td) {
-          txtValue = td.textContent || td.innerText;
-          if (txtValue.toUpperCase().indexOf(filter) > -1) {
-            tr[i].style.display = "";
-          } else {
-            tr[i].style.display = "none";
-          }
-        }
-    }
-}
+} 
 
 //Uploading the picture
 function showMyImage(fileInput) {
     var imageFile = fileInput.files[0];
     var img = document.getElementById("imgPreview");
     var imageType = /image.*/;
+
     if (imageFile.type.match(imageType)) {
       img.file = imageFile;
   
@@ -315,6 +304,6 @@ function showMyImage(fileInput) {
       })(img);
       reader.readAsDataURL(imageFile);
     }
-  }
+}
 
-//Filter functionalities
+//Filter functionalities - Am dat 2 meciuri de LoL
