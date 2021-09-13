@@ -69,7 +69,7 @@ function AppendTable(employee) {
     document.getElementById("table-employees").innerHTML += tableContent;
 }
 
-//Get employee in local storage and populate the table
+//Get employee in Database
 function AddEmployee() {
     var lastName = document.getElementById("last-name").value;
     var firstName = document.getElementById("first-name").value;
@@ -264,8 +264,8 @@ function sortNameDescending(a, b) {
 
 //Sort by age ascendent function
 function sortAgeAscending(a, b) {
-    ageA = parseInt(moment(a.birthDate).fromNow().split(' ')[0]);
-    ageB = parseInt(moment(b.birthDate).fromNow().split(' ')[0]);
+    var ageA = parseInt(moment(a.birthDate).fromNow().split(' ')[0]);
+    var ageB = parseInt(moment(b.birthDate).fromNow().split(' ')[0]);
     
     if (ageA < ageB){
         return -1;
@@ -278,8 +278,8 @@ function sortAgeAscending(a, b) {
 
 //Sort by age descendent function
 function sortAgeDescending(a, b) {
-    ageA = parseInt(moment(a.birthDate).fromNow().split(' ')[0]);
-    ageB = parseInt(moment(b.birthDate).fromNow().split(' ')[0]);
+    var ageA = parseInt(moment(a.birthDate).fromNow().split(' ')[0]);
+    var ageB = parseInt(moment(b.birthDate).fromNow().split(' ')[0]);
     
     if (ageA < ageB){
         return 1;
@@ -292,29 +292,29 @@ function sortAgeDescending(a, b) {
 
 //This function uses a switch to call the functions and show the sort result
 function sortTable() {
-    allEmployees = JSON.parse(localStorage.getItem('employees'));
+    getFromDb().then((allEmployees) => {
+        var sortBy = document.getElementById('sortBy').value;
 
-    sortBy = document.getElementById('sortBy').value;
-
-    switch (sortBy) {
-        case '1':
-            allEmployees.sort(sortNameAscending);
-            break;
-        case '2':
-            allEmployees.sort(sortNameDescending);
-            break;
-        case '3':
-            allEmployees.sort(sortAgeAscending);
-            break;
-        case '4':
-            allEmployees.sort(sortAgeDescending);
-            break;
-    }
-    document.getElementById("table-employees").innerHTML = '';
-
-    allEmployees.forEach(e => {
-        AppendTable(e);
-    });
+        switch (sortBy) {
+            case '1':
+                allEmployees.sort(sortNameAscending);
+                break;
+            case '2':
+                allEmployees.sort(sortNameDescending);
+                break;
+            case '3':
+                allEmployees.sort(sortAgeAscending);
+                break;
+            case '4':
+                allEmployees.sort(sortAgeDescending);
+                break;
+        }
+        document.getElementById("table-employees").innerHTML = '';
+    
+        allEmployees.forEach(e => {
+            AppendTable(e);
+        });
+    })
 }
 
 //Search employee by string (search bar)
