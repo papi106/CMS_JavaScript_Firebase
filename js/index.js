@@ -28,6 +28,10 @@ window.onload = () =>{
         e.addEventListener("click", closeModal, false);
     });
 
+    document.getElementById("picture").addEventListener("change", showMyImage, false);
+
+    document.getElementById("search-employee").addEventListener("keyup", searchEmployee, false);
+
     getFromDb().then(currentEmployees => {
         currentEmployees.forEach(e => {
             AppendTable(e);
@@ -87,6 +91,7 @@ function AddEmployee() {
     }
 }
 
+//Add function to Firebase
 async function saveToDb(lastName, firstName, email, gender, birthDate, picture) {
     var employeeDoc= doc(collection(db, "employeesFirebase")).withConverter(employeeConverter);
     var newEmployee = new Employee(employeeDoc.id, lastName, firstName, email, gender, birthDate, picture);
@@ -151,13 +156,20 @@ function setDelete() {
     });
 }
 
+//Delete function from Firebase
+async function deleteFromDb(documentId) {
+    await deleteDoc(doc(db, "employeesFirebase", documentId));
+}
+
 //Delete employee function
 function deleteEmployeeRow(htmlDeleteElement) {
     if (confirm('Are you sure to delete this employee ?')) {
         var rowToBeDeleted = htmlDeleteElement.target.closest("tr");
         var employeeToDeleteId = rowToBeDeleted.getAttribute("employee-id");
 
-        rowToBeDeleted.remove();
+        deleteFromDb(employeeToDeleteId).then(() => {
+            rowToBeDeleted.remove();
+        })
     }
 }
 
@@ -314,8 +326,8 @@ function searchEmployee() {
       tr = table.getElementsByTagName("tr");
 
       for (i = 0; i < tr.length; i++) {
-        td = tr[i].getElementsByTagName("td")[1]; // for column one
-        td1 = tr[i].getElementsByTagName("td")[2]; // for column two
+        var td = tr[i].getElementsByTagName("td")[1]; // for column one
+        var td1 = tr[i].getElementsByTagName("td")[2]; // for column two
 
         if (td) {
           if ( (td.innerHTML.toUpperCase().indexOf(filter) > -1) || (td1.innerHTML.toUpperCase().indexOf(filter) > -1) )  {            
@@ -328,8 +340,8 @@ function searchEmployee() {
 } 
 
 //Uploading the picture
-function showMyImage(fileInput) {
-    var imageFile = fileInput.files[0];
+function showMyImage(e) {
+    var imageFile = e.target.files[0];
     var img = document.getElementById("imgPreview");
     var imageType = /image.*/;
 
@@ -338,8 +350,8 @@ function showMyImage(fileInput) {
   
       var reader = new FileReader();
       reader.onload = (function (img) {
-        return function (e) {
-          img.src = e.target.result;
+        return function (ee) {
+          img.src = ee.target.result;
         };
       })(img);
       reader.readAsDataURL(imageFile);
