@@ -1,5 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js";
-import { getFirestore} from "https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js";
+import {doc, getFirestore, collection, addDoc, getDocs, setDoc, deleteDoc, onSnapshot} from "https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -78,22 +78,41 @@ function AddEmployee() {
 
     if(validateForm) {
 
-        employeeId = JSON.parse(localStorage.getItem('employeeNextId'));
-        allEmployees =  JSON.parse(localStorage.getItem('employees'));
-    
-        newEmployee = new Employee(employeeId++, lastName, firstName, email, gender, birthDate, picture);
-        allEmployees.push(newEmployee);
-    
-        localStorage.setItem('employeeNextId', JSON.stringify(employeeId));
-        localStorage.setItem('employees', JSON.stringify(allEmployees));
-    
-        AppendTable(newEmployee);
-
-        setDelete();
-        closeModal();
-        clearModal();
+            saveToDb(lastName, firstName, email, gender, birthDate, picture).then((newEmployee) => {
+            AppendTable(newEmployee);
+            setDelete();
+            closeModal();
+            clearModal();
+        });
     }
 }
+
+async function saveToDb(lastName, firstName, email, gender, birthDate, picture) {
+    var employeeDoc= doc(collection(db, "employeesFirebase")).withConverter(employeeConverter);
+    var newEmployee = new Employee(employeeDoc.id, lastName, firstName, email, gender, birthDate, picture);
+    setDoc(employeeDoc, newEmployee);
+
+    return Promise.resolve(newEmployee);
+}
+
+// Firestore data converter
+const employeeConverter = {
+    toFirestore: (employee) => {
+        return {
+                'employeeId' : employee.employeeId,
+                'lastName' : employee.lastName,
+                'firstName' : employee.firstName,
+                'email' : employee.email,
+                'birthDate' : employee.birthDate,
+                'gender' : employee.gender,
+                'picture' : employee.picture,
+            };
+    },
+    fromFirestore: (snapshot, options) => {
+        const data = snapshot.data(options);
+        return new Employee(data.employeeId ,data.lastName, data.firstName, data.email, data.birthDate, data.gender, data.picture);
+    }
+};
 
 //Employee constructor
 function Employee(employeeId, lastName, firstName, email, gender, birthDate, picture) {
@@ -135,23 +154,18 @@ function setDelete() {
 //Delete employee function
 function deleteEmployeeRow(htmlDeleteElement) {
     if (confirm('Are you sure to delete this employee ?')) {
-        rowToBeDeleted = htmlDeleteElement.target.closest("tr");
-        employeeToDeleteId = rowToBeDeleted.getAttribute("employee-id");
+        var rowToBeDeleted = htmlDeleteElement.target.closest("tr");
+        var employeeToDeleteId = rowToBeDeleted.getAttribute("employee-id");
 
         rowToBeDeleted.remove();
-
-        allEmployees = JSON.parse(localStorage.getItem('employees'));
-        allEmployees = allEmployees.filter(e => e.employeeId != employeeToDeleteId);
-
-        localStorage.setItem('employees', JSON.stringify(allEmployees));
     }
 }
 
 //Getting age and validation of 16+ from birthdate function
-function getAge() {
-    birthDate = new Date(birthDate);
-    diff = new Date(Date.now() - birthDate.getTime());
-    age = diff.getUTCFullYear() - 1970;
+function getAge(birthDate) {
+    var birth = new Date(birthDate);
+    var diff = new Date(Date.now() - birth.getTime());
+    var age = diff.getUTCFullYear() - 1970;
 
     return age >= 16;
 }
