@@ -1,6 +1,5 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.0.1/firebase-app.js";
-import { getFirestore, doc, setDoc, getDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js";
+import { getFirestore} from "https://www.gstatic.com/firebasejs/9.0.1/firebase-firestore.js";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -20,39 +19,40 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-var employeesTable = document.getElementById("table-employees");
-
 window.onload = () =>{
 
     document.getElementById("add-employee-button").addEventListener("click", AddEmployee, false);
-
     document.getElementById("modalButton").addEventListener("click", openModal, false);
 
     document.querySelectorAll(".close-myModal").forEach(e =>{
         e.addEventListener("click", closeModal, false);
     });
 
-    currentEmployees = JSON.parse(localStorage.getItem('employees'));
-
-    if (currentEmployees == undefined)
-    {
-        localStorage.setItem('employees', JSON.stringify([]));
-        localStorage.setItem('employeeNextId', JSON.stringify(0));
-    }
-    else
-    {
+    getFromDb().then(currentEmployees => {
         currentEmployees.forEach(e => {
             AppendTable(e);
         });
-    }
+    
+        setDelete();
+        setSort();
+    });
 
-    setDelete();
-    setSort();
+}
+
+async function getFromDb() {
+    const querySnapshot = await getDocs(collection(db, "employeesFirebase"));
+    var employees = [];
+    querySnapshot.forEach( document => {
+        var employee = document.data();
+        employee.employeeId = document.id;
+        employees.push(employee);
+    });
+    return Promise.resolve(employees);
 }
 
 //Put employee in table
 function AppendTable(employee) {
-    tableContent = `<tr employee-id=${employee.employeeId}>
+    var tableContent = `<tr employee-id=${employee.employeeId}>
     <td><img src="${employee.picture}" class="picture"></td>
     <td>${employee.lastName}</td>
     <td>${employee.firstName}</td>
@@ -67,14 +67,14 @@ function AppendTable(employee) {
 
 //Get employee in local storage and populate the table
 function AddEmployee() {
-    lastName = document.getElementById("last-name").value;
-    firstName = document.getElementById("first-name").value;
-    email = document.getElementById("email-input").value;
-    gender = document.getElementById("gender-input").value;
-    birthDate = document.getElementById("birthdate-input").value;
-    picture = document.getElementById("imgPreview").src;
+    var lastName = document.getElementById("last-name").value;
+    var firstName = document.getElementById("first-name").value;
+    var email = document.getElementById("email-input").value;
+    var gender = document.getElementById("gender-input").value;
+    var birthDate = document.getElementById("birthdate-input").value;
+    var picture = document.getElementById("imgPreview").src;
 
-    validateForm = validate(lastName, firstName, email, gender, birthDate);
+    var validateForm = validate(lastName, firstName, email, gender, birthDate);
 
     if(validateForm) {
 
@@ -88,6 +88,7 @@ function AddEmployee() {
         localStorage.setItem('employees', JSON.stringify(allEmployees));
     
         AppendTable(newEmployee);
+
         setDelete();
         closeModal();
         clearModal();
